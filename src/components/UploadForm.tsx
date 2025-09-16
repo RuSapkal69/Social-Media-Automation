@@ -29,6 +29,12 @@ export default function UploadForm() {
     }
   };
 
+  const isImage = (url: string) =>
+    /\.(jpeg|jpg|gif|png|webp)$/i.test(url.split("?")[0]);
+
+  const isVideo = (url: string) =>
+    /\.(mp4|webm|ogg)$/i.test(url.split("?")[0]);
+
   return (
     <div className="max-w-md mx-auto p-4 border rounded-lg shadow-md">
       <h2 className="text-xl font-bold mb-4">AI Caption Generator</h2>
@@ -41,9 +47,33 @@ export default function UploadForm() {
         className="w-full p-2 border rounded mb-4"
       />
 
+      {mediaUrl && (
+        <div className="mb-4">
+          {isImage(mediaUrl) && (
+            <img
+              src={mediaUrl}
+              alt="preview"
+              className="w-full rounded-lg border"
+            />
+          )}
+          {isVideo(mediaUrl) && (
+            <video
+              src={mediaUrl}
+              controls
+              className="w-full rounded-lg border"
+            />
+          )}
+          {!isImage(mediaUrl) && !isVideo(mediaUrl) && (
+            <p className="text-red-500 text-sm">
+              ⚠️ Unsupported format (only jpg, png, gif, webp, mp4, webm, ogg).
+            </p>
+          )}
+        </div>
+      )}
+
       <button
         onClick={handleGenerate}
-        disabled={loading}
+        disabled={loading || !mediaUrl}
         className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:opacity-50"
       >
         {loading ? "Generating..." : "Generate AI Caption"}
