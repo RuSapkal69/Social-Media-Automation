@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabaseClient";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { mediaUrl } = body;
+    const { mediaUrl, platforms } = body;
 
     // Mock AI caption
     const fakeCaption = `This is a mock caption for media: ${mediaUrl}`;
@@ -14,6 +14,7 @@ export async function POST(req: Request) {
       {
         media_url: mediaUrl,
         caption: fakeCaption,
+        platforms,
       },
     ]);
 
@@ -21,7 +22,10 @@ export async function POST(req: Request) {
       console.error("Supabase insert error:", error);
     }
 
-    return NextResponse.json({ caption: fakeCaption });
+    return NextResponse.json({
+      caption: fakeCaption,
+      platforms,
+    });
   } catch (error) {
     return NextResponse.json(
       { error: "Something went wrong" },

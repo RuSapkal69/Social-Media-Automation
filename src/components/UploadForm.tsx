@@ -2,10 +2,21 @@
 
 import React, { useState } from "react";
 
+const PLATFORMS = ["Instagram", "LinkedIn", "Pinterest", "YouTube"];
+
 export default function UploadForm() {
   const [mediaUrl, setMediaUrl] = useState("");
   const [caption, setCaption] = useState("");
+  const [platforms, setPlatforms] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const togglePlatform = (platform: string) => {
+    setPlatforms((prev) =>
+      prev.includes(platform)
+        ? prev.filter((p) => p !== platform)
+        : [...prev, platform]
+    );
+  };
 
   const handleGenerate = async () => {
     if (!mediaUrl) return;
@@ -16,7 +27,7 @@ export default function UploadForm() {
       const res = await fetch("/api/caption", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mediaUrl }),
+        body: JSON.stringify({ mediaUrl, platforms }),
       });
 
       const data = await res.json();
@@ -31,7 +42,6 @@ export default function UploadForm() {
 
   const isImage = (url: string) =>
     /\.(jpeg|jpg|gif|png|webp)$/i.test(url.split("?")[0]);
-
   const isVideo = (url: string) =>
     /\.(mp4|webm|ogg)$/i.test(url.split("?")[0]);
 
@@ -63,26 +73,44 @@ export default function UploadForm() {
               className="w-full rounded-lg border"
             />
           )}
-          {!isImage(mediaUrl) && !isVideo(mediaUrl) && (
-            <p className="text-red-500 text-sm">
-              ⚠️ Unsupported format (only jpg, png, gif, webp, mp4, webm, ogg).
-            </p>
-          )}
         </div>
       )}
+
+      <div className="mb-4">
+        <p className="font-medium mb-2">Select Platforms:</p>
+        <div className="flex flex-wrap gap-2">
+          {PLATFORMS.map((platform) => (
+            <button
+              key={platform}
+              onClick={() => togglePlatform(platform)}
+              type="button"
+              className={`px-3 py-1 rounded border ${
+                platforms.includes(platform)
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-100"
+              }`}
+            >
+              {platform}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <button
         onClick={handleGenerate}
         disabled={loading || !mediaUrl}
         className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:opacity-50"
       >
-        {loading ? "Generating..." : "Generate AI Caption"}
+        {loading ? "Generating..." : "Generate & Post"}
       </button>
 
       {caption && (
         <div className="mt-4 p-2 border rounded bg-gray-50">
           <strong>Generated Caption:</strong>
           <p>{caption}</p>
+          <p className="text-sm text-gray-600 mt-1">
+            Posted to: {platforms.join(", ")}
+          </p>
         </div>
       )}
     </div>

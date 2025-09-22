@@ -8,6 +8,7 @@ type Post = {
   media_url: string;
   caption: string;
   created_at: string;
+  platforms?: string[];
 };
 
 export default function History() {
@@ -45,6 +46,10 @@ export default function History() {
             >
               View Media
             </a>
+            <p className="text-sm text-gray-500">
+              Platforms: {p.platforms?.join(", ") || "None"}
+            </p>
+
           </li>
         ))}
       </ul>
