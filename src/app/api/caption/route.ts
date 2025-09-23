@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabaseClient";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { mediaUrl, platforms } = body;
+    const { mediaUrl, platforms, scheduledTime } = body;
 
     // Mock AI caption
     const fakeCaption = `This is a mock caption for media: ${mediaUrl}`;
@@ -15,6 +15,7 @@ export async function POST(req: Request) {
         media_url: mediaUrl,
         caption: fakeCaption,
         platforms,
+        scheduled_time: scheduledTime || null,
       },
     ]);
 
@@ -25,6 +26,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       caption: fakeCaption,
       platforms,
+      scheduledTime,
     });
   } catch (error) {
     return NextResponse.json(
