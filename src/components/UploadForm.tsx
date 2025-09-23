@@ -8,6 +8,7 @@ export default function UploadForm() {
   const [mediaUrl, setMediaUrl] = useState("");
   const [caption, setCaption] = useState("");
   const [platforms, setPlatforms] = useState<string[]>([]);
+  const [scheduledTime, setScheduledTime] = useState("");
   const [loading, setLoading] = useState(false);
 
   const togglePlatform = (platform: string) => {
@@ -27,7 +28,7 @@ export default function UploadForm() {
       const res = await fetch("/api/caption", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mediaUrl, platforms }),
+        body: JSON.stringify({ mediaUrl, platforms, scheduledTime }),
       });
 
       const data = await res.json();
@@ -60,18 +61,10 @@ export default function UploadForm() {
       {mediaUrl && (
         <div className="mb-4">
           {isImage(mediaUrl) && (
-            <img
-              src={mediaUrl}
-              alt="preview"
-              className="w-full rounded-lg border"
-            />
+            <img src={mediaUrl} alt="preview" className="w-full rounded-lg border" />
           )}
           {isVideo(mediaUrl) && (
-            <video
-              src={mediaUrl}
-              controls
-              className="w-full rounded-lg border"
-            />
+            <video src={mediaUrl} controls className="w-full rounded-lg border" />
           )}
         </div>
       )}
@@ -96,21 +89,35 @@ export default function UploadForm() {
         </div>
       </div>
 
+      <div className="mb-4">
+        <p className="font-medium mb-2">Schedule Time (optional):</p>
+        <input
+          type="datetime-local"
+          value={scheduledTime}
+          onChange={(e) => setScheduledTime(e.target.value)}
+          className="w-full p-2 border rounded"
+        />
+      </div>
+
       <button
         onClick={handleGenerate}
         disabled={loading || !mediaUrl}
         className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:opacity-50"
       >
-        {loading ? "Generating..." : "Generate & Post"}
+        {loading ? "Scheduling..." : "Generate & Post"}
       </button>
 
       {caption && (
         <div className="mt-4 p-2 border rounded bg-gray-50">
           <strong>Generated Caption:</strong>
           <p>{caption}</p>
-          <p className="text-sm text-gray-600 mt-1">
-            Posted to: {platforms.join(", ")}
-          </p>
+          {scheduledTime ? (
+            <p className="text-sm text-gray-600 mt-1">
+              Scheduled for: {new Date(scheduledTime).toLocaleString()}
+            </p>
+          ) : (
+            <p className="text-sm text-gray-600 mt-1">Posted immediately</p>
+          )}
         </div>
       )}
     </div>
