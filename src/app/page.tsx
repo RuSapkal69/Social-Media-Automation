@@ -1,5 +1,6 @@
 import UploadForm from "@/components/UploadForm";
 import History from "@/components/History";
+import "./globals.css";
 
 export default function Home() {
   return (
