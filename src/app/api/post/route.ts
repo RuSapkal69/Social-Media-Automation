@@ -108,7 +108,7 @@ export async function POST(req: Request) {
       const { data: tokens } = await supabase
         .from("platform_tokens")
         .select("*")
-        .in("platform", platforms.map(p => p.toLowerCase()));
+        .in("platform", platforms.map((p: string) => p.toLowerCase()));
 
       if (tokens && tokens.length > 0) {
         const tokenMap: any = {};
