@@ -1,9 +1,5 @@
-// lib/platformServices.ts
 import axios from 'axios';
-
-// ============================================
 // INSTAGRAM SERVICE
-// ============================================
 export class InstagramService {
   private accessToken: string;
   private igUserId: string;
