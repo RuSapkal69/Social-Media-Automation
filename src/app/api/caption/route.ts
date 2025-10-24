@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
     let caption = "";
 
-    // Inline limit ~20 MB
+    // Inline limit 20 MB
     const INLINE_LIMIT = 20 * 1024 * 1024;
     if (sizeBytes <= INLINE_LIMIT) {
       const base64 = Buffer.from(arrayBuffer).toString("base64");
